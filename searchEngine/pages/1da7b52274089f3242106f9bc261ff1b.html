@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Home Campus WebStore</title>
+
+
+    <link href="/Theme/css/screen.css" rel="stylesheet" media="screen, projection">
+
+    
+    <link href="/bundles/css?v=xnGLrigBUCQol2ecre4J9pppMhnfaF5KHhrLKdfZBwY1" rel="stylesheet" type="text/css" />
+
+    <link href="/Content/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Nunito">
+    <link href='http://fonts.googleapis.com/css?family=Tienne' rel='stylesheet' type='text/css'>
+
+    <link rel="shortcut icon" type="image/ico" href="/Theme/img/Desktop/favicon.ico">
+    <link rel="apple-touch-icon" href="/Theme/img/Desktop/apple-touch-icon.png">
+
+    
+
+    <style type="text/css">
+        .tk-minion-pro {
+            font-family: "minion-pro-1","minion-pro-2",sans-serif;
+        }
+    </style>
+    <!--[if gte IE 9]>
+      <style type="text/css">
+        .gradient {
+           filter: none;
+        }
+      </style>
+    <![endif]-->
+    <!--[if IE]>
+        <link href="/Theme/css/Desktop/iestyle.css" rel="stylesheet" />
+    <![endif]-->
+    <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+    <link href="/Theme/css/enhanced.css" rel="stylesheet" media="screen, projection">
+
+    <script src="/bundles/js?v=zB5G6bjnrEdVAJqOjjQcaldHGGJ0fcnd5zEefQ_8Z4M1" type="text/javascript"></script>
+
+    <script src="/Content/js/jquery-ui-1.8.11.js" type="text/javascript"></script>
+
+    <meta name="viewport" content="width=device-width">
+    
+
+    <!-- Header CSS -->
+    
+    <script type="text/javascript">
+        //Function to show the cart items at top left corner of the page
+        function ViewCartItems() {
+            $.ajax({
+                type: "POST",
+                url: '/web/ViewCart',
+                success: function (data, status, xhr) {
+                    if (data != null) {
+                        var total = parseFloat(data.total).toFixed(2);
+                        var viewCart = '<div style="margin-bottom: 4px;">\
+                                            <a href=/Home/ViewCartDetail>\
+                                                <img alt="View Cart" style="width: 20px;height:21px;" src="/Theme/img/Desktop/search.png" />\
+                                                ' + data.items + ' Items(s)\
+                                            </a>\
+                                        </div><br />\
+                                        <b>Total:</b> $' + total + '\
+                                        &nbsp;\
+                                        <a class="save_btn" href="/account/checkout" style="padding: 3px 10px 3px 10px; color: #ffffff;">CheckOut</a>\
+                                        <br />';
+                        $(".viewcart").html(viewCart);
+                        $("#processing").html("");
+                        $(".image_process").html("");
+                    }
+                }
+
+
+            });
+        }
+        //        ViewCartItems();
+        //*********************************Function to add the books to the cart*************************************************
+
+        function AddToCart(isbn, priceType) {
+            $("#processing").html('<img src="/Content/img/Desktop/loading_normal_up.gif">Please Wait...<br>');
+            var newId = "";
+            var usedId = "";
+
+            $.ajax({
+                type: "POST",
+                url: '/Home/AddToShoppingCart',
+                data: { Isbn: isbn, PriceType: priceType },
+                success: function (data, status, xhr) {
+                    //********************************************8OCde to add the items into the ddl section****************************************************************
+                    if (data.success) {
+
+                        if (priceType == "NEW") {
+                            newId = "#new" + isbn;
+                            usedId = "#used" + isbn;
+                            $(newId).attr('src', '/Content/img/DeskTop/bought-check.gif');
+                            $(usedId).attr('src', '/Content/img/Desktop/cart-buy.gif');
+                        }
+                        if (priceType == "USED") {
+                            newId = "#new" + isbn;
+                            usedId = "#used" + isbn;
+                            $(usedId).attr('src', '/Content/img/DeskTop/bought-check.gif');
+                            $(newId).attr('src', '/Content/img/Desktop/cart-buy.gif');
+                        }
+                        //    $("#processing").html("");
+                    }
+                    ViewCartItems();
+                },
+                error: function (xhr, status, error) {
+
+                    alert("error");
+                }
+
+            });
+        }
+
+        function submitSearch(e) {
+            if (e.keyCode == 13) {
+                search();
+                return false;
+            }
+        }
+
+        function search() {
+            var term = $("#search-term").val();
+            window.location.replace('/Home/Search?search=' + term);
+        }
+    </script>
+    
+</head>
+<body>
+    <div id="wrapper">
+        <div role="banner" class=" ">
+            <div class="org-nav">
+                <div class="wrap">
+
+                    <strong class="logo"><a href="/" title="Home">Landmark College</a></strong>
+
+                    <ul role="navigation">
+                        <li><a href="http://www.landmark.edu/">College</a></li>
+                        <li><a href="http://www.landmark.edu/institute">LCIRT</a></li>
+                        <li><a href="http://www.landmark.edu/library">Library</a></li>
+                        <li class="on"><a href="http://www.landmark.edu/bookstore">Bookstore</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="header-nav" role="navigation">
+                <div class="wrap">
+                    <ul class="action-nav">
+                        <li><a href="http://www.landmark.edu/admissions/visit-our-campus/plan-a-visit">Plan a Visit</a></li>
+                        <li><a href="http://www.landmark.edu/admissions/apply-now">Apply Now</a></li>
+                        <li><a href="http://www.landmark.edu/make-a-gift">Make a Gift</a></li>
+                    </ul>
+
+
+                    <div class="service-nav">
+                        <ul class="utility-nav">
+                            <li><a href="http://www.landmark.edu/events-calendar">Events</a></li>
+                            <li><a href="http://www.landmark.edu/news">News</a></li>
+                            <li><a href="http://www.landmark.edu/student-tools">Current Students</a></li>
+                            <li class="last"><a href="http://www.landmark.edu/parent-tools">Parent Tools</a></li>
+                        </ul>
+
+                        <form class="search" action="/Home/Search" method="get">
+                            <p>
+                                <label for="keywords" class="move">Search Landmark College</label>
+                                <input type="text" name="search" id="keywords" placeholder="Search Bookstore...">
+                                <input type="submit" class="btn search-button" value="Search">
+                            </p>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-nav" role="navigation">
+                <ul>
+                    <li><a href="http://www.landmark.edu/why-landmark">Why Landmark?</a></li>
+                    <li><a href="http://www.landmark.edu/academics">Academics</a></li>
+                    <li><a href="http://www.landmark.edu/campus-life">Campus Life</a></li>
+                    <li><a href="http://www.landmark.edu/admissions">Admissions</a></li>
+                    <li><a href="http://www.landmark.edu/alumni-life">Alumni</a></li>
+                    <li><a href="http://www.landmark.edu/ld-and-adhd-resources">Learning Disabilities Resources</a></li>
+                    <li><a href="http://www.landmark.edu/strengthening-landmark">Strengthening Landmark</a></li>
+                </ul>
+            </div>
+
+            <div class="bookstore-nav-wrapper gradient">
+                <div class="bookstore-nav" role="navigation">
+                    <div class="bookstore-nav-menu">
+                        <ul>
+                            <li><a href="/Home/CourseSearch">Textbooks</a></li>
+                            <li><a href="/Catalogs/CatalogProductItems?Title=GIFT-CARD&amp;Sku=1*103871&amp;Source=GM">Gift Cards</a></li>
+                            <li><a href="/Page/Landmark%20College%20Bookstore%20Policies">Bookstore Policies</a></li>
+                        </ul>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="bookstore-nav-cart">
+
+<a href="/Account/LogOn" id="logonLink">Sign In</a>                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+
+        <span class="clr"></span>
+        <div class="content">
+            <div class="wrap">
+                <div class="secondary">
+                    <h2>Cart</h2>
+                    <div class="viewcart">
+                        
+
+<div style="margin-bottom: 4px;">
+    <a href=/Home/ViewCartDetail>
+        <img alt="View Cart" style="width: 20px;height:21px;" src="/Theme/img/Desktop/search.png" />
+        0 Items(s) 
+    </a>
+</div>
+<br />
+
+
+&nbsp;
+
+                    </div>
+
+                    <h2 class="leftnav">Catalogs</h2>
+                    
+
+
+   
+<ul class="quicklinks">
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=101&amp;Title=Clothing">Clothing</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=NEW.ITEMS&amp;Title=New-Items">New Items</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=BEST.SELL&amp;Title=Best-Sellers">Best Sellers</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=110&amp;Title=Outer-Wear">Outer Wear</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=161&amp;Title=Supplies">Supplies</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=159&amp;Title=Gifts">Gifts</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=164&amp;Title=Alumni-Gifts">Alumni Gifts</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=162&amp;Title=Software">Software</a>
+            </li>
+            <li>
+                <a href="/Catalogs/CatalogProduct?CatId=163&amp;Title=Books">Books</a>
+            </li>
+</ul>
+                    <br />
+					<ul class="quicklinks">
+						<li>
+							<a href="/Home/CourseSearch">TEXTBOOKS</a>
+						</li>
+					</ul>
+                    <br />
+                    <h2 class="quicklinks_heading">Quick Links</h2>
+                    <ul class="quicklinks">
+                            <li><a href="http://www.chegg.com/?c_id=sem&amp;utm_source=yahoo&amp;utm_medium=cpc&amp;utm_campaign=tb--brand-Brand+Terms-01-YAHOO&amp;campaign=tb--brand-Brand+Terms-01-YAHOO&amp;matchtype=b&amp;s_kwcid=AL!2530!105!30691305901!s!295055841637&amp;ef_id=WaQTXwAABT@XpwHQ:20170828125807:s" target="_blank">Rent Textbooks</a></li>
+    <li><a href="https://www.cengagebrain.com/shop?cid=CJ7&amp;utm_source=CJ&amp;utm_medium=affiliate&amp;utm_content=10886689&amp;utm_campaign=FreeReturnShipping" target="_blank">CengageBrain</a></li>
+    <li><a href="http://www.diplomaframe.com/land/store.aspx" target="_blank">Diploma Frames</a></li>
+    <li><a href="http://www.facebook.com/pages/Landmark-College-Bookstore/259915769885" target="_blank">Like us on Facebook!</a></li>
+    <li><a href="http://onlinebuyback.mbsbooks.com/index.php?jde=6578" target="_blank">Online Buyback</a></li>
+    <li><a href="http://www.vitalsource.com/student-etextbooks" target="_blank">Rent etextbooks</a></li>
+    <li><a href="http://www.textbooks.com/" target="_blank">Textbooks.com</a></li>
+
+                    </ul>
+                    <span class="clr"></span>
+                    <span class="verisign"></span>
+                </div>
+                <div class="main" role="main">
+                    
+
+
+
+<div>
+<p style="text-align: left;">&nbsp;</p>
+<div class="main">
+<h1 id="skip" style="text-align: left;"><span style="font-family: 'times new roman', times; font-size: 42px; color: #768103;">Welcome to the Bookstore</span></h1>
+<br />
+<p style="text-align: left;"><span style="color: #434343; font-size: medium; font-family: helvetica;">You'll find a great selection of dorm and school supplies, clothing, health and beauty&nbsp; aides, textbooks and gift items at the Landmark College Bookstore.&nbsp;&nbsp;</span></p>
+<br />
+<p><span style="font-size: medium;">Free delivery to residence halls. Gift cards, gift baskets</span><span style="color: #434343; font-size: medium; font-family: helvetica;"> and special orders are available.&nbsp;We look forward to serving you.&nbsp; </span></p>
+<p style="text-align: center;"><span style="color: #434343; font-size: medium; font-family: helvetica;"><br /></span></p>
+<p style="text-align: left;"><span style="color: #434343; font-size: medium; font-family: helvetica;"><strong>Fall Hours: Monday - Friday 8:30 a.m.-7 p.m.&amp; Weekends 1 p.m. - 6 p.m. Closed November 23rd, 24th &amp; 25th for the Thanksgiving break. Enjoy and we will see you on the 26th.<br /></strong></span></p>
+<p style="text-align: left;"><span style="color: #434343; font-size: medium; font-family: helvetica;"><strong>Stop in and see us soon!</strong> <br /></span></p>
+<p style="text-align: left;"><span style="color: #434343; font-size: medium; font-family: helvetica;"><br /></span></p>
+<p><span style="color: #0000ff; font-size: medium; font-family: helvetica;">Now offering a limited supply of mini fridge and microwave rentals. For more information email bookstore@landmark.edu.</span>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="text-align: left;"><span style="color: #434343; font-size: medium; font-family: helvetica;">Landmark College Bookstore online is your place for official Landmark College gear and supplies. Shop in confidence for a wide selection of accessories and gifts on our secured site.</span></p>
+<p>&nbsp;</p>
+<p style="text-align: left;"><span style="font-size: medium;"><a title="J-Term Textbook List" href="../Uploads/MyGMImages/jterm18.pdf" target="_blank">January Term 2018 Textbook PDF</a></span></p>
+<p style="text-align: left;"><span style="font-size: medium;"><a title="Textbook List" href="../Uploads/MyGMImages/spring18.pdf" target="_blank">Spring Term 2018 Textbook PDF</a><br /></span></p>
+<ul>
+<li style="text-align: left;"><span style="font-size: medium;">Please be aware that we are adding and dropping courses and sections due to late enrollment.</span></li>
+<li style="text-align: left;"><span style="font-size: medium;">This form will be updated frequently and your textbooks may change. It's advised that you wait to purchase your books or purchase them from a bookstore that allows you to return.</span></li>
+<li style="text-align: left;"><span style="font-size: medium;">You can pre-order most of your textbooks and they will be waiting for you at the Bookstore. <br /></span></li>
+<li style="text-align: left;"><span style="font-size: medium;">If you are looking to rent or purchase etextbooks, check out our partners stores <a title="Rent ebooks " href="http://www.vitalsource.com/student-etextbooks" target="_blank">VitalSource,</a> and <a title="Rent Books" href="http://www.textbooks.com/" target="_blank">Textbooks.com</a> have many etextbooks and rental options available.</span></li>
+</ul>
+<p>&nbsp;</p>
+<p><img style="display: block; margin-left: auto; margin-right: auto;" src="../Uploads/MyGMImages/storecrew%20copy.jpg" alt="storecrew copy.jpg" width="440" height="271" /></p>
+<p>&nbsp;</p>
+<div class="split">
+<div style="float: left; padding-left: 20px;">
+<div><span style="font-family: helvetica; font-size: medium; color: #434343;">Contact Information</span><br /><span style="font-family: helvetica; font-size: medium; color: #434343;">802.387.6862</span><br /><span style="text-decoration: underline;"><span style="font-family: helvetica; font-size: medium; color: #19398a; text-decoration: underline;"><a href="mailto:bookstore@landmark.edu"><span style="color: #19398a; text-decoration: underline;">bookstore@landmark.edu</span></a></span></span><br />
+<p><span style="text-decoration: underline;"><span style="font-family: helvetica; font-size: medium; color: #19398a; text-decoration: underline;"><span style="color: #19398a; text-decoration: underline;"><br /></span></span></span></p>
+</div>
+<div><span style="font-family: helvetica; font-size: medium; color: #434343;">Landmark College Bookstore</span><br /><span style="font-family: helvetica; font-size: medium; color: #434343;">(located in the Strauch Family Student Center)</span><br /><span style="font-family: helvetica; font-size: medium; color: #434343;">19 River Road South</span><br /><span style="font-family: helvetica; font-size: medium; color: #434343;">Putney, VT 05346</span></div>
+</div>
+<div style="float: right; padding-right: 20px; width: 300px;"><span style="color: #434343; font-size: medium; font-family: helvetica;">Visa, MasterCard and Discover are accepted. Shipping and 6% sales tax, if applicable, apply.</span></div>
+<div style="clean: both;">&nbsp;</div>
+</div>
+</div>
+</div>
+                    <span class="clr"></span><span class="create_bottomline"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tools">
+        <div class="wrap">
+
+            <h2 class="student-tools">
+                <a id="student-tools-link" href="javascript:void(0)" onclick="openBlock('student-tools')">Current Students
+                </a>
+            </h2>
+            <ul id="student-tools-block" style="display: none;">
+                <li><a href="https://imail.landmark.edu/gw/webacc">WebAccess Email</a></li>
+                <li><a href="https://intranet.landmark.edu/">Intranet</a></li>
+                <li><a href="https://intranet.landmark.edu/isis/">ISIS</a></li>
+                <li><a href="http://courses.landmark.edu/">Moodle (Online Courses) Library</a></li>
+                <li><a href="https://mercury.landmark.edu/self/Home.aspx">Self-Service</a></li>
+                <li><a href="http://www.landmark.edu/student_events/calendar/monthview/2012_03.htm">Calendar</a></li>
+                <li><a href="https://intranet.landmark.edu/lists/absences/">Faculty Absences</a></li>
+                <li><a href="http://intranet.landmark.edu/student_affairs/hours/building_hours.cfm">Building Hours</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/residential-life1/shuttle-services/">Shuttle Service</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/student-activities-organizations/wlmc-radio/">WLMC Radio</a></li>
+            </ul>
+
+            <h2 class="parent-tools">
+                <a id="parent-tools-link" href="javascript:void(0)" onclick="openBlock('parent-tools')">Parent Tools
+                </a>
+            </h2>
+            <ul id="parent-tools-block" style="display: none;">
+                <li><a href="http://www.landmark.edu/academic_events/calendar/month/2012_03.htm">Academic Calendar</a></li>
+                <li><a href="http://www.landmark.edu/academics/academic-support-services">Academic Support</a></li>
+                <li><a href="http://www.landmark.edu/student_events/calendar/monthview/2012_03.htm">Activity Calendar</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/campus-offices">Campus Offices</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/counseling-and-health-programs">Counseling &amp; Health Services</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/campus-offices/office-of-parent-services/common-questions10">Parent FAQs</a></li>
+                <li><a href="http://quikpay.landmark.edu/">Pay Online</a></li>
+                <li><a href="http://www.landmark.edu/admissions/visit-our-campus/plan-a-visit">Plan a Visit</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/campus-offices/safety-security">Safety &amp; Security</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/residential-life1/shuttle-services">Shuttle &amp; Transportation</a></li>
+                <li><a href="http://www.landmark.edu/academics/summer-and-january-programs">Summer Programs</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/student-activities-organizations/student-newspaper-the-independent">The Independent</a></li>
+                <li><a href="http://www.landmark.edu/campus-life/student-activities-organizations/wlmc-radio">WLMC Radio</a></li>
+
+
+            </ul>
+        </div>
+    </div>
+    <div class="footer" role="contentinfo">
+        <div class="wrap">
+
+            <div class="col-a">
+                <a class="map" href="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=1+River+Road+South+Putney,+Vermont+05346&amp;aq=&amp;sll=49.267805,-86.44043&amp;sspn=11.042649,43.110352&amp;ie=UTF8&amp;hq=&amp;hnear=1+River+Rd+S,+Putney,+Vermont+05346&amp;z=15">
+                    <img border="0" alt="Landmark College" src="/Theme/staticmap.jpg">
+                </a>
+
+                <address>
+                    <strong>Landmark College</strong><br>
+                    19 River Road South<br>
+                    Putney, Vermont 05346
+                </address>
+
+                <ul>
+                    <li><a href="http://www.landmark.edu/maps-and-directions">Maps &amp; Directions</a></li>
+                    <li><a href="http://www.landmark.edu/virtual-tour">Virtual Tour</a></li>
+                    <li><a href="http://www.landmark.edu/campus-life/campus-offices">Campus Offices</a></li>
+                    <li><a href="http://www.landmark.edu/campus-life/campus-offices/human-resources">Employment Opportunities</a></li>
+                </ul>
+            </div>
+
+            <div class="col-b">
+                <strong class="move">Contact By Phone:</strong>
+                <ul>
+                    <li>Admissions
+				<span class="highlight">802.387.6718</span>
+                    </li>
+                    <li>Institute for Research and Training
+				<span class="highlight">802.387.1662</span>
+                    </li>
+                    <li>All Other Inquiries
+				<span class="highlight">802.387.4767</span>
+                    </li>
+                </ul>
+            </div>
+
+            <strong class="move">Connect with Landmark College:</strong>
+
+            <ul class="social">
+                <li><a class="fb" href="https://www.facebook.com/pages/Landmark-College/386235728069684">Facebook</a></li>
+                <li><a class="youtube" href="http://www.youtube.com/user/LandmarkChannel">YouTube</a></li>
+                <li><a class="linkedin" href="http://www.linkedin.com/groups?gid=2233505">LinkedIn</a></li>
+                <li>
+                    <span class="st_twitter_large" displaytext="Tweet" st_processed="yes"><span style="text-decoration: none; color: #000000; display: inline-block; cursor: pointer;" class="stButton"><span class="stLarge" style="background-image: url(http://w.sharethis.com/images/twitter_32.png);"></span>
+                        <img src="/Theme/img/Desktop/check-big.png" style="position: absolute; top: -7px; right: -7px; width: 19px; height: 19px; max-width: 19px; max-height: 19px; display: none; ">
+                    </span></span>
+                </li>
+            </ul>
+
+
+            <ul class="legal">
+                <li>©<!--?=date('Y')?-->
+                    Total Computing Solutions. All Rights Reserved.</li>
+                <li>Powered by: <a href="http://www.total-computing.com">Campus Webstore</a></li>
+                
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <!-- Loading Modal -->
+<div class="processing-modal" style="display: none;">
+    <div class="processing-model-wrapper">
+        Processing... <br />
+        <img src="/Content/img/Desktop/ajaxbar.gif" alt="Processing..." />
+    </div>
+</div>
+
+    <!-- Footer Scripts -->
+    
+
+    <!-- Footer JS -->
+    
+    <script type="text/javascript">
+
+        function openBlock(block) {
+            if ($("#" + block + "-link").hasClass('on')) {
+                $("#" + block + "-link").removeClass('on');
+                $("#" + block + "-block").css(
+                    'display', 'none'
+                );
+            }
+            else {
+                $("#" + block + "-link").addClass('on');
+                $("#" + block + "-block").css(
+                    'display', 'block'
+                );
+
+                if (block == 'parent-tools') {
+                    $("#student-tools-link").removeClass('on');
+                    $("#student-tools-block").css(
+                        'display', 'none'
+                    );
+                }
+                else {
+                    $("#parent-tools-link").removeClass('on');
+                    $("#parent-tools-block").css(
+                        'display', 'none'
+                    );
+                }
+            }
+        }
+
+        $(function () {
+            $("img.lazy").show().lazyload({
+                threshold: 100,
+                effect: "fadeIn"
+            });
+        });
+
+        ko.applyBindings(Mvm);
+    </script>
+</body>
+</html>
